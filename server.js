@@ -71,28 +71,6 @@ app.get("/api/candidate/:id", (req, res) => {
   });
 });
 
-// Delete a candidate
-app.delete("/api/candidate/:id", (req, res) => {
-  const sql = "DELETE FROM candidates WHERE id = ?";
-  const params = [req.params.id];
-
-  db.query(sql, params, (err, result) => {
-    if (err) {
-      res.statusMessage(400).json({ error: res.message });
-    } else if (!result.affectedRows) {
-      res.json({
-        message: "Candidate not found",
-      });
-    } else {
-      res.json({
-        message: "deleted",
-        changes: result.affectedRows,
-        id: req.params.id,
-      });
-    }
-  });
-});
-
 // Create a candidate
 app.post("/api/candidate", ({ body }, res) => {
   const errors = inputCheck(
@@ -130,7 +108,7 @@ app.put("/api/candidate/:id", (req, res) => {
     res.status(400).json({ error: errors });
     return;
   }
-  
+
   const sql = `UPDATE candidates SET party_id = ? 
                WHERE id = ?`;
   const params = [req.body.party_id, req.params.id];
@@ -147,6 +125,28 @@ app.put("/api/candidate/:id", (req, res) => {
         message: "success",
         data: req.body,
         changes: result.affectedRows,
+      });
+    }
+  });
+});
+
+// Delete a candidate
+app.delete("/api/candidate/:id", (req, res) => {
+  const sql = "DELETE FROM candidates WHERE id = ?";
+  const params = [req.params.id];
+
+  db.query(sql, params, (err, result) => {
+    if (err) {
+      res.statusMessage(400).json({ error: res.message });
+    } else if (!result.affectedRows) {
+      res.json({
+        message: "Candidate not found",
+      });
+    } else {
+      res.json({
+        message: "deleted",
+        changes: result.affectedRows,
+        id: req.params.id,
       });
     }
   });
